@@ -160,14 +160,15 @@ footer a {
 
 /* responsiveness */
 
+@media only screen and (max-width: 1000px ) {
+  body {
+    width: 60%;
+  }
+}
+
 @media only screen and (max-width: 500px) {
   body {
     width: 90%;
   }
 }
 
-@media only screen and (max-width: 1000px ) {
-  body {
-    width: 60%;
-  }
-}
