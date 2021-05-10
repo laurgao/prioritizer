@@ -8,10 +8,22 @@
 
 body {
   font-family: Inter, Helvetica,Apple Color Emoji,Segoe UI Emoji,NotoColorEmoji,Noto Color Emoji,Segoe UI Symbol,Android Emoji,EmojiSymbols,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Noto Sans,sans-serif;
-  margin: 50px auto;
   font-weight: 400;
   font-size: 16px;
+}
+
+.App {
+  height: 100vh;
+}
+
+.theme-dark .App{
+  background-color: #000;
+  color: white;
+}
+
+.main {
   width: 30%;
+  margin: 50px auto;
 }
 
 span.theme {
@@ -44,6 +56,10 @@ header .subtitle {
   line-height: 24px;
 }
 
+.theme-dark header .subtitle {
+  opacity: 0.6;
+}
+
 
 /** Buttons **/
 
@@ -64,7 +80,7 @@ header .subtitle {
   outline: none;
 }
 
-.btn:active, .btn-3:active {
+.btn:active {
   transform: scale(0.98);
 }
 
@@ -74,15 +90,19 @@ header .subtitle {
 }
 
 .btn.theme {
-  background-color: #23CFA4;
+  background-color: rgb(35, 207, 164);
+}
+
+.theme-dark .btn.theme:hover {
+  background-color: #181818;
 }
 
 .btn, .btn-3 {
   transition-duration: 250ms;
 }
 
-.btn.theme:hover {
-  background-color: black;
+.theme-dark .btn.theme {
+  background-color: rgba(35, 207, 164, 0.5);
 }
 
 .btn.regular {
@@ -94,20 +114,54 @@ header .subtitle {
   background-color: #f4f4f4;
 }
 
+.theme-dark .btn.regular {
+  background-color: black;
+  color: white;
+}
+
+.theme-dark .btn.regular:hover{
+  background-color: #181818;
+}
+
 
 .btn-3, .task {
-  margin: 10px 0;
+  margin-bottom: 10px;
   padding: 15px 20px;
   cursor: pointer;
   border-radius: 10px;
 }
 
 .btn-3 {
+  opacity: 0.3;
   padding-left: 10px;
 }
 
+.theme-dark .btn-3 {
+  opacity: 0.6;
+}
+
 .btn-3:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: #eee;
+}
+
+.theme-dark .btn-3:hover {
+  background-color: #333;
+}
+
+.btn.dark-mode-toggle {
+  background-color: black
+}
+.btn.dark-mode-toggle:hover {
+  background-color: #333
+}
+
+.theme-dark .btn.dark-mode-toggle{
+  background-color: white;
+  color: black;
+}
+
+.theme-dark .btn.dark-mode-toggle:hover{
+  background-color: #ddd;
 }
 
 /** Task **/
@@ -117,6 +171,10 @@ header .subtitle {
 
 .task {
   background: #f4f4f4;
+}
+
+.theme-dark .task {
+  background: #181818;
 }
 
 .task.reminder {
@@ -144,6 +202,13 @@ header .subtitle {
   margin: 5px;
   padding: 3px 7px;
   font-size: 16px;
+  border-radius: 2px;
+}
+
+.theme-dark .form-control input {
+  background-color: #181818;
+  border: 1px solid white;
+  color: white;
 }
 
 /* Footer */
@@ -151,11 +216,30 @@ header .subtitle {
 footer {
   margin-top: 30px;
   text-align: center;
-  opacity: 0.25;
 }
 
 footer a {
   color:inherit;
+  opacity: 0.25;
+  transition-duration: 250ms;
+}
+
+.theme-dark a {
+  opacity: 0.4;
+}
+
+footer a:hover {
+  color:#23CFA4;
+  opacity: 1;
+}
+
+.theme-dark footer a:hover {
+  color:#23CFA4;
+  opacity: 0.5;
+}
+
+footer .link {
+  margin: 0 5px;
 }
 
 /* responsiveness */

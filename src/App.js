@@ -3,6 +3,7 @@ import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import AddTaskButton from './components/AddTaskButton'
 import Footer from './components/Footer'
+import DarkModeButton from './components/DarkModeButton'
 import { useState, useEffect, useRef } from 'react'
 
 
@@ -26,6 +27,7 @@ const quoteIndex = Math.floor(Math.random() * quotes.length - 1) + 1
 function App() {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState( [] )
+  const [darkMode, setDarmkMode] = useState(false)
 
   function useKey(key, cb) {
     const callbackRef = useRef(cb);
@@ -54,8 +56,12 @@ function App() {
   
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
-  }, [tasks]) // any time our todos changes, we want to change our todos
-  
+  }, [tasks]) // any time our list of tasks changes, we want to change our tasks
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarmkMode(!darkMode)
+  }
 
   // Delete task
   const deleteTask = (id) => {
@@ -84,10 +90,6 @@ function App() {
     setShowAddTask(!showAddTask)
   }
 
-  function handleEnter() {
-    console.log("Enter key is pressed");
-  }
-
   function handleN() {
     if (!showAddTask) {
       toggleShowAddTask()
@@ -96,19 +98,22 @@ function App() {
       input.select();
     }
   }
-  useKey("Enter", handleEnter);
 
   useKey("KeyN", handleN);
   
   return (
-    <div className="App">
-      <Header quotes={quotes} quoteIndex={quoteIndex}/>
-      <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} setTasks={setTasks}/>
-      {!showAddTask && <AddTaskButton onAdd={toggleShowAddTask}/>}
-      
-      {showAddTask && <AddTask onAdd={addTask} hideAddTask={toggleShowAddTask}/>}
-      <Footer />
-      
+    <div className={darkMode && "theme-dark"}>
+      <div className="App">
+      <DarkModeButton onToggle={toggleDarkMode} />
+        <div className="main">
+          <Header quotes={quotes} quoteIndex={quoteIndex}/>
+          <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} setTasks={setTasks}/>
+          {!showAddTask && <AddTaskButton onAdd={toggleShowAddTask}/>}
+          
+          {showAddTask && <AddTask onAdd={addTask} hideAddTask={toggleShowAddTask}/>}
+          <Footer />
+        </div>
+      </div>      
     </div>
   );
 }
