@@ -19,7 +19,8 @@ const quotes = [
   "Procrastination is the inability to deal with emotional discomfort.",
   "Distractions are not caused by social media or by any outside factor. Distractions are caused by a desire from the inside to escape negative emotions — boredom, anxiety, stress, you name it. ",
   "Time management is pain management.",
-  "Things which matter most must never be at the mercy of things which matter least."
+  "Things which matter most must never be at the mercy of things which matter least.",
+  "No one cares about what you're bad at and neither should you.  - Derek Sivers"
 ]
 
 const quoteIndex = Math.floor(Math.random() * quotes.length - 1) + 1 

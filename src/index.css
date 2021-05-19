@@ -13,7 +13,7 @@ body {
 }
 
 .App {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .theme-dark .App{
@@ -23,7 +23,10 @@ body {
 
 .main {
   width: 30%;
-  margin: 50px auto;
+  margin: 0 auto;
+  margin-top: 50px;
+  padding-bottom: 50px;
+
 }
 
 span.theme {
@@ -245,13 +248,13 @@ footer .link {
 /* responsiveness */
 
 @media only screen and (max-width: 1000px ) {
-  body {
+  .main {
     width: 60%;
   }
 }
 
 @media only screen and (max-width: 500px) {
-  body {
+  .main {
     width: 90%;
   }
 }
