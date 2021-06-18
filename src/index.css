@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   box-sizing: border-box;
@@ -21,19 +24,15 @@ body {
   color: white;
 }
 
-.main {
-  width: 30%;
-  margin: 0 auto;
-  margin-top: 50px;
-  padding-bottom: 50px;
-
-}
-
 span.theme {
   background: linear-gradient(135deg, rgb(214, 255, 127) 0%, rgb(0, 179, 204) 100%);
   -webkit-text-fill-color: transparent !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
+}
+
+.w-128, .w-lg {
+  width: 32rem;
 }
 
 /** Header **/
@@ -135,7 +134,6 @@ header .subtitle {
 }
 
 .btn-3 {
-  opacity: 0.3;
   padding-left: 10px;
 }
 
@@ -168,9 +166,6 @@ header .subtitle {
 }
 
 /** Task **/
-.tasks {
-  margin-top: 30px;
-}
 
 .task {
   background: #f4f4f4;
@@ -180,8 +175,8 @@ header .subtitle {
   background: #181818;
 }
 
-.task.reminder {
-  border-left: 5px solid #23CFA4;;
+.border-theme {
+  border-color: #23CFA4;;
 }
 
 .task p {
@@ -227,7 +222,7 @@ footer a {
   transition-duration: 250ms;
 }
 
-.theme-dark a {
+.theme-dark footer a {
   opacity: 0.4;
 }
 
@@ -239,6 +234,10 @@ footer a:hover {
 .theme-dark footer a:hover {
   color:#23CFA4;
   opacity: 0.5;
+}
+
+.theme-hover:hover {
+  color:#23CFA4;
 }
 
 footer .link {
