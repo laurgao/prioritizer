@@ -8,7 +8,7 @@ function Task( { task, onDelete, onToggle, provided } ) {
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
-        className={`task ${task.reminder && "border-theme border-l-4"}`} 
+        className={`task ${task.active && "border-theme border-l-4"}`} 
         onDoubleClick={() => onToggle(task.id)}
         >
             <p>{task.text} <FaTimes onClick={() => onDelete(task.id)} style={deleteStyle}/></p> 

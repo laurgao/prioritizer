@@ -4,20 +4,10 @@ import AddTaskButton from "./AddTaskButton";
 import useKey, { waitForEl } from ".././utils/useKey";
 import { useState } from "react";
 
-const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, isOpen}) => {
-
-    // toggle upon clicking add
-    const toggleShowAdd = (e) => {
-    if (!isOpen) {
-            setShowAdd(true);
-            e.preventDefault();
-            waitForEl(`add-task-field-${type}`);
-        }
-    }
+const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleShowAdd}) => {
+    
     const [showPriorities, setShowPriorities] = useState(false);
 
-    const key = type == 1 ? "KeyB" : "KeyN";
-    useKey(key, toggleShowAdd);
     useKey("Escape", () => (setShowAdd(false)) );
 
     return (
@@ -26,7 +16,7 @@ const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, isOpen}) 
                 <p><button 
                     className="font-semibold disabled:cursor-default" 
                     onClick={() => (setShowPriorities(true))}
-                    disabled={showPriorities}
+                    disabled={showPriorities || type==2}
                 >Stage {type}: {stageName ? `Specific tasks for ${stageName}` : "Buckets"}</button>{showPriorities && " (aka priorities)"}</p>
                 {type==1 ? <p>Following the <a className="underline theme-hover transition" href="https://www.samsonzhang.com/2021/01/20/the-rule-of-three.html" target="_blank" rel="noreferrer">Rule of Three</a>, you should have no more than three buckets at one time.</p> : 
                     <>

@@ -8,51 +8,23 @@ import useKey, {waitForEl} from "./utils/useKey";
 
 const LOCAL_STORAGE_KEY = "theUltimatePrioritizer.tasks"
 const LOCAL_STORAGE_KEY_THEME = "theUltimatePrioritizer.theme"
+const LOCAL_STORAGE_KEY_STAGES = "theUltimatePrioritizer.stages"
 
-// Putting quotes outside the function so the random only gets reloaded once, and the quote doesnt switch unless we reload.
-const quotes = [
-  "Most of us spend too much time on what is urgent and not enough time on what is important.",
-  "A dream written down with a date becomes a goal. A goal broken down into steps becomes a plan. A plan backed by action makes your dreams come true.",
-  "How you spend your time is who you become. - Aly Juma",
-  "Discipline is choosing between what's painful right now vs what's the most painful.",
-  "Amateurs show up whenever they feel like it. But being a professional means showing up when you don't want to.",
-  "Procrastination is the inability to deal with emotional discomfort.",
-  "Distractions are not caused by social media or by any outside factor. Distractions are caused by a desire from the inside to escape negative emotions — boredom, anxiety, stress, you name it. ",
-  "Time management is pain management.",
-  "Things which matter most must never be at the mercy of things which matter least.",
-  "No one cares about what you're bad at and neither should you.  - Derek Sivers"
-]
-
-const quoteIndex = Math.floor(Math.random() * quotes.length - 1) + 1 // Random quote
 function App() {
   const [showAddBucket, setShowAddBucket] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
-  const [showAdd, setShowAdd] = useState(false);
+  const [formIsOpen, setFormIsOpen] = useState(false);
   useEffect(() => {
-    setShowAdd(showAddBucket || showAddTask)
+    setFormIsOpen(showAddBucket || showAddTask)
   }, [showAddBucket, showAddTask])
-
-  const setBuckets = (buckets) => {
-    setStages([{
-        ...stages[0],
-        tasks: buckets
-      }, 
-      ...stages.filter(s => s.type == 2)
-    ])
-  }
-  const [stages, setStages] = useState([{
-    name: "buckets",
-    active: true,
-    tasks: [],
-    type: 1
-  }]);
+  const [tasks, setTasks] = useState([]);
+  const [stages, setStages] = useState([]);
 
   useEffect(() => {
-    const storedStages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storedStages && storedStages[0].name) {
+    const storedStages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES));
+    if (storedStages) {
       setStages(storedStages);
-      console.log(storedStages, stages);
-    } //  else set tasks to stored tasks
+    }
   }, [])
   
   const [darkMode1, setDarkMode1] = useState(false);
@@ -61,11 +33,18 @@ function App() {
     const storedDarkMode = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_THEME)); 
     if (storedDarkMode) setDarkMode1(storedDarkMode);
   }, [])
+  useEffect(() => {
+    const storedTasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)); 
+    if (storedTasks) setTasks(storedTasks);
+  }, [])
   
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stages));
-  }, [stages]) 
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
+  }, [tasks]) 
 
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY_STAGES, JSON.stringify(stages));
+  }, [stages]) 
   
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY_THEME, JSON.stringify(darkMode1))
@@ -75,43 +54,27 @@ function App() {
   const toggleDarkMode = (e) => {
     if (e instanceof KeyboardEvent){
       // it is a keyboard event
-      if (showAdd) return;
+      if (formIsOpen) return;
     }
     setDarkMode1(!darkMode1);
   }
-  console.log(stages)
 
-  // The active childstage is theo ne which parent task is active.
   useEffect(() => {
-    //const childStage = stages.filter(s => s.name == tasks.filter(task => task.id == id)[0].text)[0];
-    if(stages.filter(s => s.type == 1)[0]) {
-      setStages([        
-        ...stages.filter(s => s.type == 1),
-        ...stages.filter(s => s.type == 1)[0].tasks.filter((task) => stages.name == task.text).map(task => ( // for every task that has a existing corresponding stage 
-        {
-          ...stages.filter((childStage) => childStage.name == task.text)[0],
-          active: task.reminder,
-        }
-      )), ])
-    }
-  }, [stages[0].tasks])
-
-  const clearStagesTwo = () => setStages([
-    {
-      name: "buckets",
-      active: true,
-      tasks: [],
-      type: 1
-    }
-  ])
+    setStages(
+      stages.map(stage => ({
+        ...stage,
+        active: tasks.filter(task => stage.name == task.text)[0] ? tasks.filter(task => stage.name == task.text)[0].active : false
+      }))
+    )
+    console.log(stages);
+  }, [tasks])
 
   const setStageTwoTasks = (newTasks) => { // array
-    const activeStage = stages.filter(stage => stage.active && stage.type == 2)[0]
+    const activeStage = stages.filter(stage => stage.active)[0]
     const newStage = {
         name: activeStage.name,
         active: activeStage.active,
         tasks: newTasks,
-        type: activeStage.type
     }
 
     setStages(
@@ -120,6 +83,60 @@ function App() {
   }
 
   useKey("KeyD", toggleDarkMode);
+
+  const addStage = () => {
+      const activeTask = tasks.filter(task => task.active)[0];
+      if (!activeTask) {
+          console.log("No active task");
+          return;
+      }
+      const stageName = activeTask.text;
+      if (!stageName) return;
+
+      if (stages.filter(stage => stage.name == stageName)[0]) {
+          console.log("A stage with this name already exists");
+          console.log(stages);
+          return;
+      }
+
+      const newStage = {
+          name: stageName,
+          active: true,
+          tasks: [],
+          type: 2,
+      }
+      setStages([...stages, newStage]);
+  }
+
+
+  // toggle upon clicking add
+  const addStageKeyboard = (e) => {
+      if (!formIsOpen) {
+          e.preventDefault();
+          addStage();
+      }
+  }
+  useKey("KeyS", addStageKeyboard);
+
+  // toggle upon clicking add
+  const toggleShowAddBucket = (e) => {
+    if (!formIsOpen) {
+      setShowAddBucket(true);
+      e.preventDefault();
+      waitForEl(`add-task-field-${1}`);
+    }
+  }
+
+  const toggleShowAddTask = (e) => {
+    if (!formIsOpen && stages.filter(stage => stage.active)[0] ) {
+      setShowAddTask(true);
+      e.preventDefault();
+      waitForEl(`add-task-field-${2}`);
+    }
+  }
+
+  useKey("KeyN", toggleShowAddTask);
+  useKey("KeyB", toggleShowAddBucket);
   
   return (
     <div className={darkMode1 ? "theme-dark" : ""}>
@@ -127,16 +144,16 @@ function App() {
       <DarkModeButton onToggle={toggleDarkMode} />
         <div className="flex flex-row gap-x-5 justify-center mt-12">
           <div className="max-w-lg">
-            <Header quotes={quotes} quoteIndex={quoteIndex}/>
-            <Stage tasks={stages[0].tasks} setTasks={setBuckets} type={1} showAdd={showAddBucket} setShowAdd={setShowAddBucket} isOpen={showAdd}/>
+            <Header/>
+            <Stage thisStageisOpen={true} tasks={tasks} setTasks={setTasks} type={1} showAdd={showAddBucket} setShowAdd={setShowAddBucket} formIsOpen={formIsOpen} toggleShowAdd={toggleShowAddBucket}/>
             <Footer />
           </div>
           
-          {stages[0].tasks.filter(task => task.reminder)[0] && <div className="max-w-lg w-lg">
-            {stages.filter(stage => stage.active && stage.type == 2)[0] ? (
-              <Stage isOpen={showAdd} stageName={stages.filter(stage => stage.active && stage.type == 2)[0].name} type={2} tasks={stages.filter(stage => stage.active && stage.type == 2)[0].tasks} setTasks={setStageTwoTasks} showAdd={showAddTask} setShowAdd={setShowAddTask}/>
+          {tasks.filter(task => task.active)[0] && <div className="max-w-lg w-lg">
+            {stages.filter(stage => stage.active)[0] ? (
+              <Stage formIsOpen={formIsOpen} stageName={stages.filter(stage => stage.active)[0].name} type={2} tasks={stages.filter(stage => stage.active)[0].tasks} setTasks={setStageTwoTasks} showAdd={showAddTask} setShowAdd={setShowAddTask} toggleShowAdd={toggleShowAddTask}/>
             ) : 
-            <AddStageButton stages={stages} setStages={setStages} masterTasks={stages[0].tasks} isOpen={showAdd}/> }
+            <AddStageButton addStage={addStage}/> }
           </div> }
 
         </div>

@@ -22,21 +22,21 @@ function tasks( { tasks, setTasks } ) {
         setTasks(tasks.filter((task) => task.id !== id));
     }
 
-    // Toggle reminder
+    // Toggle active
     const onToggle = (id) => {
         const changedTask = tasks.filter((task) => task.id === id)
-        if (changedTask.reminder) {
+        if (changedTask.active) {
             setTasks(tasks.map((task) => task.id === id ? {
                 ...task,
-                reminder: !task.reminder,
+                active: !task.active,
             } : task))
-        } else { // Activate this task, all other tasks reminder is fale.
+        } else { // Activate this task, all other tasks active is fale.
             setTasks(tasks.map((task) => task.id === id ? {
                 ...task,
-                reminder: !task.reminder,
+                active: !task.active,
             } : {
                 ...task,
-                reminder: false,
+                active: false,
             }))
         }
 

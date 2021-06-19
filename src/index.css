@@ -205,8 +205,12 @@ header .subtitle {
 
 .theme-dark .form-control input {
   background-color: #181818;
-  border: 1px solid white;
   color: white;
+}
+
+.theme-dark .form-control input:focus {
+  outline: white;
+  border: 1px solid white;
 }
 
 /* Footer */
