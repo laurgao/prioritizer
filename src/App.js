@@ -18,14 +18,7 @@ function App() {
     setFormIsOpen(showAddBucket || showAddTask)
   }, [showAddBucket, showAddTask])
   const [tasks, setTasks] = useState([]);
-  const [stages, setStages] = useState([]);
-
-  useEffect(() => {
-    const storedStages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES));
-    if (storedStages) {
-      setStages(storedStages);
-    }
-  }, [])
+  const [stages, setStages] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES)) || []);
   
   const [darkMode1, setDarkMode1] = useState(false);
   
@@ -38,6 +31,21 @@ function App() {
     if (storedTasks) setTasks(storedTasks);
   }, [])
   
+
+  useEffect(() => {
+    const storedStages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES));
+    if (storedStages) {
+      setStages(
+        storedStages.map(stage => ({
+          ...stage,
+          active: stage.active,
+          name: stage.name
+        }))
+      )
+      console.log(stages, storedStages)
+    }
+  }, [])
+  
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]) 
@@ -47,7 +55,7 @@ function App() {
   }, [stages]) 
   
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY_THEME, JSON.stringify(darkMode1))
+    localStorage.setItem(LOCAL_STORAGE_KEY_THEME, JSON.stringify(darkMode1));
   }, [darkMode1]) 
 
   // Toggle dark mode
@@ -66,7 +74,6 @@ function App() {
         active: tasks.filter(task => stage.name == task.text)[0] ? tasks.filter(task => stage.name == task.text)[0].active : false
       }))
     )
-    console.log(stages);
   }, [tasks])
 
   const setStageTwoTasks = (newTasks) => { // array
@@ -95,7 +102,6 @@ function App() {
 
       if (stages.filter(stage => stage.name == stageName)[0]) {
           console.log("A stage with this name already exists");
-          console.log(stages);
           return;
       }
 
