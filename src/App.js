@@ -19,9 +19,9 @@ function App() {
   }, [showAddBucket, showAddTask])
   const [tasks, setTasks] = useState([]);
   const [stages, setStages] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES)) || []);
-  
+
   const [darkMode1, setDarkMode1] = useState(false);
-  
+
   useEffect(() => {
     const storedDarkMode = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_THEME)); 
     if (storedDarkMode) setDarkMode1(storedDarkMode);
@@ -30,22 +30,7 @@ function App() {
     const storedTasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)); 
     if (storedTasks) setTasks(storedTasks);
   }, [])
-  
 
-  useEffect(() => {
-    const storedStages = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES));
-    if (storedStages) {
-      setStages(
-        storedStages.map(stage => ({
-          ...stage,
-          active: stage.active,
-          name: stage.name
-        }))
-      )
-      console.log(stages, storedStages)
-    }
-  }, [])
-  
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]) 
@@ -53,15 +38,14 @@ function App() {
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY_STAGES, JSON.stringify(stages));
   }, [stages]) 
-  
+
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY_THEME, JSON.stringify(darkMode1));
   }, [darkMode1]) 
 
   // Toggle dark mode
   const toggleDarkMode = (e) => {
-    if (e instanceof KeyboardEvent){
-      // it is a keyboard event
+    if (e instanceof KeyboardEvent){ // it is a keyboard event
       if (formIsOpen) return;
     }
     setDarkMode1(!darkMode1);
@@ -69,7 +53,7 @@ function App() {
 
   useEffect(() => {
     setStages(
-      stages.map(stage => ({
+      prevStages => prevStages.map(stage => ({
         ...stage,
         active: tasks.filter(task => stage.name === task.text)[0] ? tasks.filter(task => stage.name === task.text)[0].active : false
       }))
@@ -143,7 +127,7 @@ function App() {
 
   useKey("KeyN", toggleShowAddTask);
   useKey("KeyB", toggleShowAddBucket);
-  
+
   return (
     <div className={darkMode1 ? "theme-dark" : ""}>
       <div className="App ">
