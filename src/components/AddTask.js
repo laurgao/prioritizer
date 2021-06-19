@@ -19,7 +19,7 @@ function AddTask( {tasks, setTasks, setShowAddTask, type} ) {
         if (!text) {
             alert("What world do you live in where it's socially acceptable to add unnamed tasks?"); // creates a popup alert
             return;
-        } else if (tasks.filter(t => t.text == text).length !== 0) {
+        } else if (tasks.filter(t => t.text === text).length !== 0) {
             alert("No sane person would have multiple tasks with the same name.");
             return;
         }
@@ -35,7 +35,7 @@ function AddTask( {tasks, setTasks, setShowAddTask, type} ) {
         <div>
             <form className='add-form'>
                 <div className='form-control'>
-                    <input type='text' id={`add-task-field-${type}`} placeholder={type==1 ? "Bucket" : "Task"} value={text} onChange={(e) => setText(e.target.value)}></input>
+                    <input type='text' id={`add-task-field-${type}`} placeholder={type===1 ? "Bucket" : "Task"} value={text} onChange={(e) => setText(e.target.value)}></input>
                 </div>
 
                 <div className=''>

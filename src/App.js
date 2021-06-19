@@ -71,7 +71,7 @@ function App() {
     setStages(
       stages.map(stage => ({
         ...stage,
-        active: tasks.filter(task => stage.name == task.text)[0] ? tasks.filter(task => stage.name == task.text)[0].active : false
+        active: tasks.filter(task => stage.name === task.text)[0] ? tasks.filter(task => stage.name === task.text)[0].active : false
       }))
     )
   }, [tasks])
@@ -100,7 +100,7 @@ function App() {
       const stageName = activeTask.text;
       if (!stageName) return;
 
-      if (stages.filter(stage => stage.name == stageName)[0]) {
+      if (stages.filter(stage => stage.name === stageName)[0]) {
           console.log("A stage with this name already exists");
           return;
       }

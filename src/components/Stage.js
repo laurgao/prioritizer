@@ -1,7 +1,7 @@
 import Tasks from "./Tasks";
 import AddTask from "./AddTask";
 import AddTaskButton from "./AddTaskButton";
-import useKey, { waitForEl } from ".././utils/useKey";
+import useKey from ".././utils/useKey";
 import { useState } from "react";
 
 const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleShowAdd}) => {
@@ -16,9 +16,9 @@ const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleSho
                 <p><button 
                     className="font-semibold disabled:cursor-default" 
                     onClick={() => (setShowPriorities(true))}
-                    disabled={showPriorities || type==2}
+                    disabled={showPriorities || type===2}
                 >Stage {type}: {stageName ? `Specific tasks for ${stageName}` : "Buckets"}</button>{showPriorities && " (aka priorities)"}</p>
-                {type==1 ? <p>Following the <a className="underline theme-hover transition" href="https://www.samsonzhang.com/2021/01/20/the-rule-of-three.html" target="_blank" rel="noreferrer">Rule of Three</a>, you should have no more than three buckets at one time.</p> : 
+                {type===1 ? <p>Following the <a className="underline theme-hover transition" href="https://www.samsonzhang.com/2021/01/20/the-rule-of-three.html" target="_blank" rel="noreferrer">Rule of Three</a>, you should have no more than three buckets at one time.</p> : 
                     <>
                         <p>1. <span className="font-semibold">Write</span> specific tasks</p>
                         <p>2. <span className="font-semibold">Prioritize</span></p>
