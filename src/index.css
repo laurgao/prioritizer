@@ -220,24 +220,19 @@ footer {
   text-align: center;
 }
 
-footer a {
+footer .link {
   color:inherit;
   opacity: 0.25;
   transition-duration: 250ms;
 }
 
-.theme-dark footer a {
+.theme-dark footer .link {
   opacity: 0.4;
 }
 
-footer a:hover {
+footer .link:hover {
   color:#23CFA4;
   opacity: 1;
-}
-
-.theme-dark footer a:hover {
-  color:#23CFA4;
-  opacity: 0.5;
 }
 
 .theme-hover:hover {

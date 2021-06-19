@@ -131,12 +131,11 @@ function App() {
   return (
     <div className={darkMode1 ? "theme-dark" : ""}>
       <div className="App ">
-      <DarkModeButton onToggle={toggleDarkMode} />
+        <DarkModeButton onToggle={toggleDarkMode} />
         <div className="flex flex-row gap-x-5 justify-center mt-12">
           <div className="max-w-lg">
             <Header/>
             <Stage thisStageisOpen={true} tasks={tasks} setTasks={setTasks} type={1} showAdd={showAddBucket} setShowAdd={setShowAddBucket} formIsOpen={formIsOpen} toggleShowAdd={toggleShowAddBucket}/>
-            <Footer />
           </div>
           
           {tasks.filter(task => task.active)[0] && <div className="max-w-lg w-lg">
@@ -147,6 +146,7 @@ function App() {
           </div> }
 
         </div>
+        <Footer />
       </div>      
     </div>
   );
