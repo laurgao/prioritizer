@@ -1,11 +1,10 @@
-import React from 'react'
-import { FaPlus } from 'react-icons/fa'
+import { FaPlus } from "react-icons/fa";
 
-function AddTaskButton({onAdd}) {
+function AddTaskButton({onAdd, type}) {
     return (
-        <div style={{display:'flex'}} className='btn-3' onClick={onAdd}>
+        <div className="flex opacity-30 btn-3" onClick={onAdd}>
             <FaPlus/>
-            <p style={{marginLeft:'10px', marginTop:'-2px' }}>New (n)</p>
+            <p className="ml-2.5 -mt-1">{type===1 ? "New bucket (b)" : "New task (n)"}</p>
         </div>
     )
 }

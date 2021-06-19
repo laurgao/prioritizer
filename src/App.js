@@ -1,118 +1,151 @@
-import Header from './components/Header'
-import Tasks from './components/Tasks'
-import AddTask from './components/AddTask'
-import AddTaskButton from './components/AddTaskButton'
-import Footer from './components/Footer'
-import DarkModeButton from './components/DarkModeButton'
-import { useState, useEffect, useRef } from 'react'
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import DarkModeButton from "./components/DarkModeButton";
+import { useState, useEffect } from "react";
+import AddStageButton from "./components/AddStageButton";
+import Stage from "./components/Stage";
+import useKey, {waitForEl} from "./utils/useKey";
 
-
-const LOCAL_STORAGE_KEY = 'theUltimatePrioritizer.tasks'
-
-// Putting quotes outside the function so the random only gets reloaded once, and the quote doesnt switch unless we reload.
-const quotes = [
-  'Most of us spend too much time on what is urgent and not enough time on what is important.',
-  'A dream written down with a date becomes a goal. A goal broken down into steps becomes a plan. A plan backed by action makes your dreams come true.',
-  'How you spend your time is who you become. - Aly Juma',
-  "Discipline is choosing between what's painful right now vs what's the most painful.",
-  "Amateurs show up whenever they feel like it. But being a professional means showing up when you don't want to.",
-  "Procrastination is the inability to deal with emotional discomfort.",
-  "Distractions are not caused by social media or by any outside factor. Distractions are caused by a desire from the inside to escape negative emotions — boredom, anxiety, stress, you name it. ",
-  "Time management is pain management.",
-  "Things which matter most must never be at the mercy of things which matter least.",
-  "No one cares about what you're bad at and neither should you.  - Derek Sivers"
-]
-
-const quoteIndex = Math.floor(Math.random() * quotes.length - 1) + 1 
+const LOCAL_STORAGE_KEY = "theUltimatePrioritizer.tasks"
+const LOCAL_STORAGE_KEY_THEME = "theUltimatePrioritizer.theme"
+const LOCAL_STORAGE_KEY_STAGES = "theUltimatePrioritizer.stages"
 
 function App() {
-  const [showAddTask, setShowAddTask] = useState(false)
-  const [tasks, setTasks] = useState( [] )
-  const [darkMode, setDarmkMode] = useState(false)
+  const [showAddBucket, setShowAddBucket] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [formIsOpen, setFormIsOpen] = useState(false);
+  useEffect(() => {
+    setFormIsOpen(showAddBucket || showAddTask)
+  }, [showAddBucket, showAddTask])
+  const [tasks, setTasks] = useState([]);
+  const [stages, setStages] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_STAGES)) || []);
 
-  function useKey(key, cb) {
-    const callbackRef = useRef(cb);
-
-    useEffect(() => {
-      callbackRef.current = cb;
-    })
-
-    useEffect(() => {
-      const handleKeyPress = (e) => {
-        if(e.code === key) {
-          callbackRef.current(e)
-        }
-      }
-
-      document.addEventListener("keypress", handleKeyPress)
-      return () => document.removeEventListener("keypress", handleKeyPress)
-    }, [key])
-  }
+  const [darkMode1, setDarkMode1] = useState(false);
 
   useEffect(() => {
-    const storedTasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) // json.parse converts the string into an array.
-    if (storedTasks) setTasks(storedTasks)
-  }, []) // because the empty array never changes, we only call this function once
-  
-  
+    const storedDarkMode = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_THEME)); 
+    if (storedDarkMode) setDarkMode1(storedDarkMode);
+  }, [])
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
-  }, [tasks]) // any time our list of tasks changes, we want to change our tasks
+    const storedTasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)); 
+    if (storedTasks) setTasks(storedTasks);
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
+  }, [tasks]) 
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY_STAGES, JSON.stringify(stages));
+  }, [stages]) 
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY_THEME, JSON.stringify(darkMode1));
+  }, [darkMode1]) 
 
   // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarmkMode(!darkMode)
+  const toggleDarkMode = (e) => {
+    if (e instanceof KeyboardEvent){ // it is a keyboard event
+      if (formIsOpen) return;
+    }
+    setDarkMode1(!darkMode1);
   }
 
-  // Delete task
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id))
+  useEffect(() => {
+    setStages(
+      prevStages => prevStages.map(stage => ({
+        ...stage,
+        active: tasks.filter(task => stage.name === task.text)[0] ? tasks.filter(task => stage.name === task.text)[0].active : false
+      }))
+    )
+  }, [tasks])
+
+  const setStageTwoTasks = (newTasks) => { // array
+    const activeStage = stages.filter(stage => stage.active)[0]
+    const newStage = {
+        name: activeStage.name,
+        active: activeStage.active,
+        tasks: newTasks,
+    }
+
+    setStages(
+      [...stages.filter(s => s.name !== activeStage.name), newStage]
+    )
   }
 
-  // Toggle reminder
-  const toggleReminder = (id) => {
-    setTasks(tasks.map((task) => task.id === id ? {
-      ...task,
-      reminder: !task.reminder,
-    } : task))
+  useKey("KeyD", toggleDarkMode);
+
+  const addStage = () => {
+      const activeTask = tasks.filter(task => task.active)[0];
+      if (!activeTask) {
+          console.log("No active task");
+          return;
+      }
+      const stageName = activeTask.text;
+      if (!stageName) return;
+
+      if (stages.filter(stage => stage.name === stageName)[0]) {
+          console.log("A stage with this name already exists");
+          return;
+      }
+
+      const newStage = {
+          name: stageName,
+          active: true,
+          tasks: [],
+          type: 2,
+      }
+      setStages([...stages, newStage]);
   }
 
-  // Add task
-  const addTask = (task) => {
-    const id = Math.floor(Math.random() * 1000) + 1
-    const newTask = { id, ...task}
-    const newTasks = [...tasks, newTask] // where the issue was - used curly braces instead of square brackets.
-    // because tasks is an array of objects, not objects. [] for array, {} for object.
-    setTasks(newTasks)
-  }
 
   // toggle upon clicking add
-  const toggleShowAddTask = () => {
-    setShowAddTask(!showAddTask)
+  const addStageKeyboard = (e) => {
+      if (!formIsOpen) {
+          e.preventDefault();
+          addStage();
+      }
   }
+  useKey("KeyS", addStageKeyboard);
 
-  function handleN() {
-    if (!showAddTask) {
-      toggleShowAddTask()
-      const input = document.getElementById('task-field');
-      input.focus();
-      input.select();
+  // toggle upon clicking add
+  const toggleShowAddBucket = (e) => {
+    if (!formIsOpen) {
+      setShowAddBucket(true);
+      e.preventDefault();
+      waitForEl(`add-task-field-${1}`);
     }
   }
 
-  useKey("KeyN", handleN);
-  
+  const toggleShowAddTask = (e) => {
+    if (!formIsOpen && stages.filter(stage => stage.active)[0] ) {
+      setShowAddTask(true);
+      e.preventDefault();
+      waitForEl(`add-task-field-${2}`);
+    }
+  }
+
+  useKey("KeyN", toggleShowAddTask);
+  useKey("KeyB", toggleShowAddBucket);
+
   return (
-    <div className={darkMode && "theme-dark"}>
-      <div className="App">
+    <div className={darkMode1 ? "theme-dark" : ""}>
+      <div className="App ">
       <DarkModeButton onToggle={toggleDarkMode} />
-        <div className="main">
-          <Header quotes={quotes} quoteIndex={quoteIndex}/>
-          <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} setTasks={setTasks}/>
-          {!showAddTask && <AddTaskButton onAdd={toggleShowAddTask}/>}
+        <div className="flex flex-row gap-x-5 justify-center mt-12">
+          <div className="max-w-lg">
+            <Header/>
+            <Stage thisStageisOpen={true} tasks={tasks} setTasks={setTasks} type={1} showAdd={showAddBucket} setShowAdd={setShowAddBucket} formIsOpen={formIsOpen} toggleShowAdd={toggleShowAddBucket}/>
+            <Footer />
+          </div>
           
-          {showAddTask && <AddTask onAdd={addTask} hideAddTask={toggleShowAddTask}/>}
-          <Footer />
+          {tasks.filter(task => task.active)[0] && <div className="max-w-lg w-lg">
+            {stages.filter(stage => stage.active)[0] ? (
+              <Stage formIsOpen={formIsOpen} stageName={stages.filter(stage => stage.active)[0].name} type={2} tasks={stages.filter(stage => stage.active)[0].tasks} setTasks={setStageTwoTasks} showAdd={showAddTask} setShowAdd={setShowAddTask} toggleShowAdd={toggleShowAddTask}/>
+            ) : 
+            <AddStageButton addStage={addStage}/> }
+          </div> }
+
         </div>
       </div>      
     </div>
