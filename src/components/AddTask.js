@@ -22,7 +22,7 @@ function AddTask( {tasks, setTasks, setShowAddTask, type} ) {
         } else if (tasks.filter(t => t.text === text).length !== 0) {
             alert("No sane person would have multiple tasks with the same name.");
             return;
-        } else if (type === 1 && tasks.length > 3) {
+        } else if (type === 1 && tasks.length >= 3) {
             if (window.confirm("Are you sure you want to add more than 3 priorities? This is at your own risk of doing none of your priorities well while burning out.")) {
               console.log("ok i respect your choice")
             } else {
