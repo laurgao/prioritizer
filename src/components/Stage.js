@@ -1,8 +1,8 @@
-import Tasks from "./Tasks";
+import { useState } from "react";
+import useKey from ".././utils/useKey";
 import AddTask from "./AddTask";
 import AddTaskButton from "./AddTaskButton";
-import useKey from ".././utils/useKey";
-import { useState } from "react";
+import Tasks from "./Tasks";
 
 const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleShowAdd}) => {
     
@@ -20,7 +20,7 @@ const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleSho
                 >Stage {type}: {stageName ? `Specific tasks for ${stageName}` : "Buckets"}</button>{showPriorities && " (aka priorities)"}</p>
                 {type===1 ? 
                     <>
-                        <p>Following the <a className="underline theme-hover transition" href="https://www.samsonzhang.com/2021/01/20/the-rule-of-three.html" target="_blank" rel="noreferrer">Rule of Three</a>, you should have no more than three buckets at one time.</p> 
+                        <p>Following the <a className="underline theme-hover transition" href="https://www.samsonzhang.com/2021/01/20/the-rule-of-three" target="_blank" rel="noreferrer">Rule of Three</a>, you should have no more than three buckets at one time.</p> 
                         {tasks && tasks.length > 0 && <p className="my-2">Double click on a bucket for some magic!</p>} 
                     </>        
                 : 
