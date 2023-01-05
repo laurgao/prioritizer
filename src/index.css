@@ -42,7 +42,7 @@ header {
   margin-bottom: 200px;
   width: 95%;
   margin: auto;
-  word-break: break-word;
+  overflow-wrap: break-word;
   overflow-x: hidden;
   text-align: center;
 }
