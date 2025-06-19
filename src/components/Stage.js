@@ -26,7 +26,7 @@ const Stage = ({type, tasks, setTasks, showAdd, setShowAdd, stageName, toggleSho
                 : 
                     <>
                         <p>1. <span className="font-semibold">Write</span> specific tasks</p>
-                        <p>2. <span className="font-semibold">Prioritize</span></p>
+                        <p>2. <span className="font-semibold">Prioritize</span> with drag and drop</p>
                         <p>3. <span className="font-semibold">Do</span> your tasks in order. Make sure to <a className="underline theme-hover transition" href="https://www.scotthyoung.com/blog/2020/05/04/do-the-real-thing/" target="_blank" rel="noreferrer">do the real thing</a> 😉</p>
                     </>
                 }
